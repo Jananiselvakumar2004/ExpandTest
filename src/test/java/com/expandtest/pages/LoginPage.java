@@ -1,80 +1,196 @@
 package com.expandtest.pages;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 
-public class LoginPage extends BasePage {
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
-    private final By emailField = By.cssSelector("input#email");
-    private final By passwordField = By.cssSelector("input#password");
-    private final By loginButton = By.cssSelector("button[type='submit']");
-    private final By errorMessage = By.xpath("//div[contains(@class,'alert')]");
-    private final By successMessage = By.xpath("//div[contains(@class,'alert-success')]");
-    private final By logoutButton = By.xpath("//a[text()='Logout']");
-    private final By loginPageHeader = By.cssSelector("h1");
-    private final By emailValidation = By.cssSelector(":invalid");
+import java.time.Duration;
+
+public class LoginPage {
+
+    WebDriver driver;
+
+    WebDriverWait wait;
 
     public LoginPage(WebDriver driver) {
-        super(driver);
+
+        this.driver = driver;
+
+        wait = new WebDriverWait(
+                driver,
+                Duration.ofSeconds(5)
+        );
     }
 
-    public void navigateToLogin() {
-        driver.get("https://practice.expandtesting.com/notes/app/login");
-        System.out.println("Navigated to login page");
+    // LOCATORS
+    By usernameField =
+            By.id("username");
+
+    By passwordField =
+            By.id("password");
+
+    By loginButton =
+            By.xpath("//button[@type='submit']");
+
+    By logoutButton =
+            By.linkText("Logout");
+
+    By errorMessage =
+            By.id("flash");
+
+    // OPEN LOGIN PAGE
+    public void navigateToLoginPage() {
+
+        driver.get(
+                "https://practice.expandtesting.com/login"
+        );
+
+        System.out.println(" Navigated to Login page");
     }
 
-    public void enterEmail(String email) {
-        type(emailField, email);
-        System.out.println("Entered email: " + email);
+    // ENTER USERNAME
+    public void enterUsername(String username) {
+
+        wait.until(
+                ExpectedConditions.visibilityOfElementLocated(
+                        usernameField
+                )
+        ).sendKeys(username);
+
+        System.out.println(" Username entered");
     }
 
+    // ENTER PASSWORD
     public void enterPassword(String password) {
-        type(passwordField, password);
-        System.out.println("Entered password");
+
+        driver.findElement(passwordField)
+                .sendKeys(password);
+
+        System.out.println(" Password entered");
     }
 
+    // CLICK LOGIN
     public void clickLogin() {
-        click(loginButton);
-        System.out.println("Clicked login button");
+
+        WebElement loginBtn =
+                wait.until(
+                        ExpectedConditions.elementToBeClickable(
+                                loginButton
+                        )
+                );
+
+        ((JavascriptExecutor) driver)
+                .executeScript(
+                        "arguments[0].click();",
+                        loginBtn
+                );
+
+        System.out.println(" Login button clicked");
     }
 
-    public void login(String email, String password) {
-        enterEmail(email);
+    // LOGIN METHOD
+    public void login(String username,
+                      String password) {
+
+        enterUsername(username);
+
         enterPassword(password);
+
         clickLogin();
     }
 
+    // LOGOUT
     public void clickLogout() {
-        click(logoutButton);
-        System.out.println("Clicked logout");
+
+        wait.until(
+                ExpectedConditions.elementToBeClickable(
+                        logoutButton
+                )
+        ).click();
+
+        System.out.println(" Logout button clicked");
     }
 
-    public void submitEmptyForm() {
-        click(loginButton);
-        System.out.println("Submitted empty form");
-    }
-
-    public boolean isErrorMessageVisible() {
-        return isVisible(errorMessage);
-    }
-
-    public boolean isSuccessMessageVisible() {
-        return isVisible(successMessage);
-    }
-
+    // LOGOUT BUTTON CHECK
     public boolean isLogoutButtonVisible() {
-        return isVisible(logoutButton);
+
+        try {
+
+            wait.until(
+                    ExpectedConditions.visibilityOfElementLocated(
+                            logoutButton
+                    )
+            );
+
+            return true;
+
+        } catch (Exception e) {
+
+            return false;
+        }
     }
 
-    public boolean isLoginPageVisible() {
-        return isVisible(loginPageHeader);
+    // ERROR MESSAGE CHECK
+    public boolean isErrorMessageDisplayed() {
+
+        try {
+
+            wait.until(
+                    ExpectedConditions.visibilityOfElementLocated(
+                            errorMessage
+                    )
+            );
+
+            return true;
+
+        } catch (Exception e) {
+
+            return false;
+        }
     }
 
-    public boolean isValidationMessageVisible() {
-        return isVisible(emailValidation);
+    // ERROR TEXT
+    public String getErrorMessageText() {
+
+        try {
+
+            return driver.findElement(errorMessage)
+                    .getText();
+
+        } catch (Exception e) {
+
+            return "";
+        }
     }
 
-    public String getErrorMessage() {
-        return getText(errorMessage);
+    // LOGIN PAGE CHECK
+    public boolean isLoginPageDisplayed() {
+
+        return driver.getCurrentUrl()
+                .contains("/login");
+    }
+
+    // EMPTY LOGIN
+    public void submitEmptyLoginForm() {
+
+        clickLogin();
+    }
+
+    // VALIDATION MESSAGE
+    public boolean isValidationMessageDisplayed() {
+
+        WebElement username =
+                driver.findElement(usernameField);
+
+        String message =
+                username.getAttribute(
+                        "validationMessage"
+                );
+
+        return !message.isEmpty();
     }
 }

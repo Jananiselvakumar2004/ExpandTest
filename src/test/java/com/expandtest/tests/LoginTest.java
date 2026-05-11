@@ -1,57 +1,141 @@
 package com.expandtest.tests;
 
 import com.expandtest.pages.LoginPage;
-import com.expandtest.utils.ConfigReader;
+
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 public class LoginTest extends BaseTest {
 
-    LoginPage lp;
+    // ===== TEST DATA =====
 
-    @DataProvider(name = "loginData")
-    public Object[][] getData() {
-        return new Object[][] {
-                { ConfigReader.get("email"), ConfigReader.get("password"), true },
-                { "wrong@email.com", "wrongpass", false }
+    @DataProvider(name = "loginCredentials")
+    public Object[][] loginCredentials() {
+
+        return new Object[][]{
+
+                {
+                        "practice",
+                        "SuperSecretPassword!",
+                        true
+                },
+
+                {
+                        "wronguser",
+                        "wrongpassword123",
+                        false
+                }
         };
     }
 
-    @Test(dataProvider = "loginData", priority = 1)
-    public void testLogin(String email, String pass, boolean shouldPass) {
-        lp = new LoginPage(driver);
-        lp.navigateToLogin();
-        lp.login(email, pass);
+    // ===== LOGIN TEST =====
+
+    @Test(dataProvider = "loginCredentials", priority = 1)
+
+    public void testLogin(String username,
+                          String password,
+                          boolean shouldPass) {
+
+        System.out.println(
+                "[TEST] Login test for: " + username);
+
+        LoginPage loginPage =
+                new LoginPage(driver);
+
+        loginPage.navigateToLoginPage();
+
+        loginPage.enterUsername(username);
+
+        loginPage.enterPassword(password);
+
+        loginPage.clickLogin();
 
         if (shouldPass) {
-            Assert.assertTrue(lp.isLogoutButtonVisible(),
-                    "Valid login failed");
-            System.out.println("Valid login PASSED");
+
+            Assert.assertTrue(
+                    loginPage.isLogoutButtonVisible(),
+                    "Logout button not visible after valid login"
+            );
+
+            System.out.println(
+                    "[PASS] Valid login passed");
+
         } else {
-            Assert.assertTrue(lp.isErrorMessageVisible(),
-                    "Error not shown for invalid login");
-            System.out.println("Invalid login PASSED");
+
+            Assert.assertTrue(
+                    loginPage.isErrorMessageDisplayed(),
+                    "Error message not displayed for invalid login"
+            );
+
+            System.out.println(
+                    "[PASS] Invalid login validation passed");
         }
     }
 
+    // ===== LOGOUT TEST =====
+
     @Test(priority = 2)
+
     public void testLogout() {
-        lp = new LoginPage(driver);
-        lp.navigateToLogin();
-        lp.login(ConfigReader.get("email"), ConfigReader.get("password"));
-        lp.clickLogout();
-        Assert.assertTrue(lp.isLoginPageVisible(), "Logout failed");
-        System.out.println("Logout PASSED");
+
+        System.out.println(
+                "[TEST] Logout functionality test");
+
+        LoginPage loginPage =
+                new LoginPage(driver);
+
+        loginPage.navigateToLoginPage();
+
+        loginPage.enterUsername("practice");
+
+        loginPage.enterPassword("SuperSecretPassword!");
+
+        loginPage.clickLogin();
+
+        Assert.assertTrue(
+                loginPage.isLogoutButtonVisible(),
+                "Login failed — cannot test logout"
+        );
+
+        loginPage.clickLogout();
+
+        Assert.assertTrue(
+                loginPage.isErrorMessageDisplayed()
+                        || driver.getCurrentUrl().contains("login"),
+                "Login page not displayed after logout"
+        );
+
+        System.out.println(
+                "[PASS] Logout redirected successfully");
     }
 
+    // ===== INVALID LOGIN MESSAGE TEST =====
+
     @Test(priority = 3)
-    public void testEmptyLogin() {
-        lp = new LoginPage(driver);
-        lp.navigateToLogin();
-        lp.submitEmptyForm();
-        Assert.assertTrue(lp.isValidationMessageVisible(),
-                "Validation not shown");
-        System.out.println("Empty login validation PASSED");
+
+    public void testInvalidLoginErrorMessage() {
+
+        System.out.println(
+                "[TEST] Invalid login error message test");
+
+        LoginPage loginPage =
+                new LoginPage(driver);
+
+        loginPage.navigateToLoginPage();
+
+        loginPage.enterUsername("wronguser");
+
+        loginPage.enterPassword("wrongpassword");
+
+        loginPage.clickLogin();
+
+        Assert.assertTrue(
+                loginPage.isErrorMessageDisplayed(),
+                "Error message not displayed"
+        );
+
+        System.out.println(
+                "[PASS] Invalid login error displayed");
     }
 }

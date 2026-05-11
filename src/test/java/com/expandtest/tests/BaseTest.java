@@ -1,64 +1,111 @@
 package com.expandtest.tests;
 
-import com.aventstack.extentreports.Status;
-import com.expandtest.listeners.ScreenshotListener;
-import com.expandtest.utils.ConfigReader;
-import com.expandtest.utils.ExtentReportManager;
-import io.github.bonigarcia.wdm.WebDriverManager;
+import com.aventstack.extentreports.ExtentReports;
+import com.aventstack.extentreports.ExtentTest;
+
+import com.expandtest.utils.ExtentManager;
+
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
+
 import org.testng.ITestResult;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.AfterSuite;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeSuite;
 
+import java.time.Duration;
+
 public class BaseTest {
 
     protected WebDriver driver;
 
+    protected static ExtentReports extent;
+
+    protected static ExtentTest test;
+
     @BeforeSuite
-    public void startReport() {
-        ExtentReportManager.getInstance();
+    public void setupReport() {
+
+        extent = ExtentManager.getInstance();
+
+        System.out.println(
+                "[INFO] Extent Report initialized"
+        );
     }
 
     @BeforeMethod
-    public void setUp(java.lang.reflect.Method method) {
-        System.out.println("=== Setting up: " + method.getName() + " ===");
-        try {
-            WebDriverManager.chromedriver().setup();
-        } catch (Exception e) {
-            System.setProperty("webdriver.chrome.driver",
-                    "/opt/homebrew/bin/chromedriver");
-        }
-        ChromeOptions options = new ChromeOptions();
-        options.addArguments("--start-maximized");
-        options.addArguments("--remote-allow-origins=*");
-        driver = new ChromeDriver(options);
-        driver.get(ConfigReader.get("baseUrl"));
+    public void setup(java.lang.reflect.Method method) {
 
-        ExtentReportManager.setTest(
-                ExtentReportManager.getInstance()
-                        .createTest(method.getName()));
+        System.out.println(
+                "=== Setting up: "
+                        + method.getName()
+                        + " ==="
+        );
+
+        driver = new ChromeDriver();
+
+        driver.manage().window().maximize();
+
+        // IMPLICIT WAIT
+        driver.manage().timeouts()
+                .implicitlyWait(
+                        Duration.ofSeconds(5)
+                );
+
+        driver.manage().timeouts()
+                .pageLoadTimeout(
+                        Duration.ofSeconds(20)
+                );
+
+        System.out.println(
+                "[INFO] Browser launched successfully"
+        );
+
+        test = extent.createTest(
+                method.getName()
+        );
     }
 
     @AfterMethod
     public void tearDown(ITestResult result) {
-        if (result.getStatus() == ITestResult.FAILURE) {
-            ExtentReportManager.getTest()
-                    .log(Status.FAIL, result.getThrowable());
-            new ScreenshotListener().onTestFailure(result);
-        } else if (result.getStatus() == ITestResult.SUCCESS) {
-            ExtentReportManager.getTest().log(Status.PASS, "Test passed");
+
+        if (result.getStatus()
+                == ITestResult.FAILURE) {
+
+            test.fail(
+                    result.getThrowable()
+            );
         }
-        if (driver != null) driver.quit();
-        System.out.println("=== Browser closed ===");
+
+        else if (result.getStatus()
+                == ITestResult.SUCCESS) {
+
+            test.pass("Test Passed");
+        }
+
+        else {
+
+            test.skip("Test Skipped");
+        }
+
+        if (driver != null) {
+
+            driver.quit();
+
+            System.out.println(
+                    "=== Browser closed ==="
+            );
+        }
     }
 
     @AfterSuite
-    public void endReport() {
-        ExtentReportManager.flush();
-        System.out.println("=== Extent Report generated ===");
+    public void flushReport() {
+
+        extent.flush();
+
+        System.out.println(
+                "=== Extent Report generated ==="
+        );
     }
 }

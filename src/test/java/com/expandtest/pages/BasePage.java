@@ -6,6 +6,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+
 import java.time.Duration;
 
 public class BasePage {
@@ -15,32 +16,27 @@ public class BasePage {
 
     public BasePage(WebDriver driver) {
         this.driver = driver;
-        this.wait = new WebDriverWait(driver,
-                Duration.ofSeconds(ConfigReader.getTimeout()));
+
+        wait = new WebDriverWait(
+                driver,
+                Duration.ofSeconds(ConfigReader.getTimeout())
+        );
     }
 
     protected WebElement waitForElement(By locator) {
         return wait.until(
-                ExpectedConditions.visibilityOfElementLocated(locator));
-    }
-
-    protected WebElement waitForClickable(By locator) {
-        return wait.until(
-                ExpectedConditions.elementToBeClickable(locator));
+                ExpectedConditions.visibilityOfElementLocated(locator)
+        );
     }
 
     protected void click(By locator) {
-        waitForClickable(locator).click();
+        waitForElement(locator).click();
     }
 
     protected void type(By locator, String text) {
-        WebElement el = waitForElement(locator);
-        el.clear();
-        el.sendKeys(text);
-    }
-
-    protected String getText(By locator) {
-        return waitForElement(locator).getText();
+        WebElement element = waitForElement(locator);
+        element.clear();
+        element.sendKeys(text);
     }
 
     protected boolean isVisible(By locator) {

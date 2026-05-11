@@ -1,5 +1,0 @@
-browser=chrome
-baseUrl=https://practice.expandtesting.com
-timeout=10
-email=your_registered_email@gmail.com
-password=your_password
