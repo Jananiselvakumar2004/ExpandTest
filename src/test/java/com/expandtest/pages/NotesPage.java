@@ -8,26 +8,24 @@ import java.util.List;
 
 public class NotesPage extends BasePage {
 
-
-    private By addNoteButton = By.cssSelector("a.btn-primary[href='/notes/app/notes/add']");
-    private By noteTitleField = By.cssSelector("input#title");
-    private By noteDescField = By.cssSelector("textarea#description");
-    private By categoryDropdown = By.cssSelector("select#category");
-    private By saveNoteButton = By.cssSelector("button[type='submit']");
-    private By noteCards = By.cssSelector("div.card-body");
-    private By noteTitle = By.cssSelector("div.card-body a.card-title");
-    private By editButton = By.cssSelector("a.btn-warning");
-    private By deleteButton = By.cssSelector("button.btn-danger");
-    private By confirmDeleteButton = By.cssSelector("button#confirmDeleteNote");
-    private By successMessage = By.cssSelector("div.alert-success");
-    private By filterHome = By.cssSelector("a[href='/notes/app']");
-    private By filterWork = By.cssSelector("a[data-filter='Work']");
-    private By filterPersonal = By.cssSelector("a[data-filter='Personal']");
-
+    private final By addNoteButton = By.xpath("//a[contains(text(),'Add Note') or contains(text(),'+')]");
+    private final By noteTitleField = By.cssSelector("input#title");
+    private final By noteDescField = By.cssSelector("textarea#description");
+    private final By categoryDropdown = By.cssSelector("select#category");
+    private final By saveNoteButton = By.cssSelector("button[type='submit']");
+    private final By noteCards = By.cssSelector(".card");
+    private final By noteTitle = By.cssSelector(".card-title");
+    private final By editButton = By.xpath("//a[contains(text(),'Edit')]");
+    private final By deleteButton = By.xpath("//button[contains(text(),'Delete')]");
+    private final By confirmDeleteButton = By.xpath("//button[contains(text(),'Delete') and @class[contains(.,'danger')]]");
+    private final By successMessage = By.xpath("//div[contains(@class,'alert-success') or contains(@class,'success')]");
+    private final By filterWork = By.xpath("//a[contains(text(),'Work')]");
+    private final By filterPersonal = By.xpath("//a[contains(text(),'Personal')]");
 
     public NotesPage(WebDriver driver) {
         super(driver);
     }
+    // ... rest of methods
 
 
     public void navigateToNotes() {

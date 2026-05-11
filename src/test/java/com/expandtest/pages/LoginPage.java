@@ -5,22 +5,19 @@ import org.openqa.selenium.WebDriver;
 
 public class LoginPage extends BasePage {
 
-    // ===== LOCATORS =====
-    private By emailField = By.cssSelector("input#email");
-    private By passwordField = By.cssSelector("input#password");
-    private By loginButton = By.cssSelector("button[type='submit']");
-    private By errorMessage = By.cssSelector("div.alert-danger");
-    private By successMessage = By.cssSelector("div.alert-success");
-    private By logoutButton = By.cssSelector("a[href='/notes/app/logout']");
-    private By loginPageHeader = By.cssSelector("h1.title");
-    private By emailValidation = By.cssSelector("div.invalid-feedback");
+    private final By emailField = By.cssSelector("input#email");
+    private final By passwordField = By.cssSelector("input#password");
+    private final By loginButton = By.cssSelector("button[type='submit']");
+    private final By errorMessage = By.xpath("//div[contains(@class,'alert')]");
+    private final By successMessage = By.xpath("//div[contains(@class,'alert-success')]");
+    private final By logoutButton = By.xpath("//a[text()='Logout']");
+    private final By loginPageHeader = By.cssSelector("h1");
+    private final By emailValidation = By.cssSelector(":invalid");
 
-    // ===== CONSTRUCTOR =====
     public LoginPage(WebDriver driver) {
         super(driver);
     }
 
-    // ===== ACTIONS =====
     public void navigateToLogin() {
         driver.get("https://practice.expandtesting.com/notes/app/login");
         System.out.println("Navigated to login page");
@@ -57,7 +54,6 @@ public class LoginPage extends BasePage {
         System.out.println("Submitted empty form");
     }
 
-    // ===== VERIFICATIONS =====
     public boolean isErrorMessageVisible() {
         return isVisible(errorMessage);
     }

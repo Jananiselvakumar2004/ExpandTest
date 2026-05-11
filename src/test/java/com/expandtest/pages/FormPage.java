@@ -8,23 +8,14 @@ import java.util.List;
 
 public class FormPage extends BasePage {
 
-
-    private By inputField = By.cssSelector("input[type='number']");
-
-
-    private By dropdownSelect = By.cssSelector("select");
-
-
-    private By checkboxes = By.cssSelector("input[type='checkbox']");
-
-
-    private By radioButtons = By.cssSelector("input[type='radio']");
-
+    private final By inputField = By.cssSelector("input[type='number']");
+    private final By dropdownSelect = By.cssSelector("select");
+    private final By checkboxes = By.cssSelector("input[type='checkbox']");
+    private final By radioButtons = By.cssSelector("input[type='radio']");
 
     public FormPage(WebDriver driver) {
         super(driver);
     }
-
 
     public void navigateToInputs() {
         driver.get("https://practice.expandtesting.com/inputs");
@@ -42,72 +33,70 @@ public class FormPage extends BasePage {
     }
 
     public void navigateToRadioButtons() {
-        driver.get(
-                "https://practice.expandtesting.com/radiobuttons");
+        driver.get("https://practice.expandtesting.com/radio-buttons");
         System.out.println("Navigated to Radio Buttons page");
     }
 
     public void enterNumberInput(String value) {
         type(inputField, value);
-        System.out.println("Entered input value: " + value);
+        System.out.println("Entered: " + value);
     }
 
     public String getInputValue() {
-        return waitForElement(inputField)
-                .getAttribute("value");
+        return waitForElement(inputField).getAttribute("value");
     }
 
     public void selectDropdownOption(String option) {
-        WebElement dropdown = waitForElement(dropdownSelect);
-        new Select(dropdown).selectByVisibleText(option);
-        System.out.println("Selected dropdown option: " + option);
+        new Select(waitForElement(dropdownSelect))
+                .selectByVisibleText(option);
+        System.out.println("Selected: " + option);
     }
 
     public String getSelectedDropdownValue() {
-        WebElement dropdown = waitForElement(dropdownSelect);
-        return new Select(dropdown)
+        return new Select(waitForElement(dropdownSelect))
                 .getFirstSelectedOption().getText();
     }
 
     public void checkFirstCheckbox() {
         List<WebElement> boxes = driver.findElements(checkboxes);
-        if (!boxes.get(0).isSelected()) {
-            boxes.get(0).click();
-        }
+        if (!boxes.getFirst().isSelected())
+            boxes.getFirst().click();
         System.out.println("Checked first checkbox");
     }
 
     public void uncheckFirstCheckbox() {
         List<WebElement> boxes = driver.findElements(checkboxes);
-        if (boxes.get(0).isSelected()) {
-            boxes.get(0).click();
-        }
+        if (boxes.getFirst().isSelected())
+            boxes.getFirst().click();
         System.out.println("Unchecked first checkbox");
     }
 
     public boolean isFirstCheckboxChecked() {
         return driver.findElements(checkboxes)
-                .get(0).isSelected();
+                .getFirst().isSelected();
     }
 
     public void selectFirstRadioButton() {
+        waitForElement(radioButtons);
         List<WebElement> radios = driver.findElements(radioButtons);
-        radios.get(0).click();
-        System.out.println("Selected first radio button");
+        if (!radios.isEmpty()) {
+            radios.getFirst().click();
+            System.out.println("Selected first radio");
+        }
     }
 
     public void selectSecondRadioButton() {
         List<WebElement> radios = driver.findElements(radioButtons);
-        radios.get(1).click();
-        System.out.println("Selected second radio button");
+        if (radios.size() > 1) {
+            radios.get(1).click();
+            System.out.println("Selected second radio");
+        }
     }
 
     public boolean isOnlyOneRadioSelected() {
-        List<WebElement> radios = driver.findElements(radioButtons);
         int count = 0;
-        for (WebElement r : radios) {
+        for (WebElement r : driver.findElements(radioButtons))
             if (r.isSelected()) count++;
-        }
         return count == 1;
     }
 }

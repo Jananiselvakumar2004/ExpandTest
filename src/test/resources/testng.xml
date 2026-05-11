@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<suite name="ExpandTestSuite" verbose="1">
+    <listeners>
+        <listener class-name="com.expandtest.listeners.ScreenshotListener"/>
+    </listeners>
+    <test name="Login Tests">
+        <classes>
+            <class name="com.expandtest.tests.LoginTest"/>
+        </classes>
+    </test>
+    <test name="Notes Tests">
+        <classes>
+            <class name="com.expandtest.tests.NotesTest"/>
+        </classes>
+    </test>
+    <test name="Form Tests">
+        <classes>
+            <class name="com.expandtest.tests.FormTest"/>
+        </classes>
+    </test>
+</suite>

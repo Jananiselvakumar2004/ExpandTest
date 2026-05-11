@@ -1,7 +1,7 @@
 package com.expandtest.utils;
 
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Properties;
 
 public class ConfigReader {
@@ -10,12 +10,17 @@ public class ConfigReader {
 
     static {
         try {
-            FileInputStream fis = new FileInputStream(
-                    "src/test/resources/config.properties");
-            properties.load(fis);
+            InputStream input = ConfigReader.class
+                    .getClassLoader()
+                    .getResourceAsStream("config.properties");
+            if (input == null) {
+                throw new RuntimeException(
+                        "config.properties not found in classpath");
+            }
+            properties.load(input);
         } catch (IOException e) {
-            throw new RuntimeException("config.properties not found: "
-                    + e.getMessage());
+            throw new RuntimeException(
+                    "Failed to load config.properties: " + e.getMessage());
         }
     }
 
@@ -24,6 +29,7 @@ public class ConfigReader {
     }
 
     public static int getTimeout() {
-        return Integer.parseInt(properties.getProperty("timeout", "10"));
+        return Integer.parseInt(
+                properties.getProperty("timeout", "10"));
     }
 }
