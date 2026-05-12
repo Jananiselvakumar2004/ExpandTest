@@ -26,7 +26,7 @@ public class LoginPage {
         );
     }
 
-    // LOCATORS
+
     By usernameField =
             By.id("username");
 
@@ -42,7 +42,7 @@ public class LoginPage {
     By errorMessage =
             By.id("flash");
 
-    // OPEN LOGIN PAGE
+
     public void navigateToLoginPage() {
 
         driver.get(
@@ -52,7 +52,7 @@ public class LoginPage {
         System.out.println(" Navigated to Login page");
     }
 
-    // ENTER USERNAME
+
     public void enterUsername(String username) {
 
         wait.until(
@@ -64,7 +64,7 @@ public class LoginPage {
         System.out.println(" Username entered");
     }
 
-    // ENTER PASSWORD
+
     public void enterPassword(String password) {
 
         driver.findElement(passwordField)
@@ -73,7 +73,7 @@ public class LoginPage {
         System.out.println(" Password entered");
     }
 
-    // CLICK LOGIN
+
     public void clickLogin() {
 
         WebElement loginBtn =
@@ -92,7 +92,7 @@ public class LoginPage {
         System.out.println(" Login button clicked");
     }
 
-    // LOGIN METHOD
+
     public void login(String username,
                       String password) {
 
@@ -103,7 +103,7 @@ public class LoginPage {
         clickLogin();
     }
 
-    // LOGOUT
+
     public void clickLogout() {
 
         wait.until(
@@ -115,7 +115,7 @@ public class LoginPage {
         System.out.println(" Logout button clicked");
     }
 
-    // LOGOUT BUTTON CHECK
+
     public boolean isLogoutButtonVisible() {
 
         try {
@@ -134,7 +134,7 @@ public class LoginPage {
         }
     }
 
-    // ERROR MESSAGE CHECK
+
     public boolean isErrorMessageDisplayed() {
 
         try {
@@ -153,7 +153,7 @@ public class LoginPage {
         }
     }
 
-    // ERROR TEXT
+
     public String getErrorMessageText() {
 
         try {
@@ -167,20 +167,20 @@ public class LoginPage {
         }
     }
 
-    // LOGIN PAGE CHECK
+
     public boolean isLoginPageDisplayed() {
 
         return driver.getCurrentUrl()
                 .contains("/login");
     }
 
-    // EMPTY LOGIN
+
     public void submitEmptyLoginForm() {
 
         clickLogin();
     }
 
-    // VALIDATION MESSAGE
+
     public boolean isValidationMessageDisplayed() {
 
         WebElement username =

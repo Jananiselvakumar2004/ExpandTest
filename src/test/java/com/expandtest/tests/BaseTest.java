@@ -30,7 +30,7 @@ public class BaseTest {
         extent = ExtentManager.getInstance();
 
         System.out.println(
-                "[INFO] Extent Report initialized"
+                "  Extent Report initialized"
         );
     }
 
@@ -47,7 +47,7 @@ public class BaseTest {
 
         driver.manage().window().maximize();
 
-        // IMPLICIT WAIT
+
         driver.manage().timeouts()
                 .implicitlyWait(
                         Duration.ofSeconds(5)
@@ -59,7 +59,7 @@ public class BaseTest {
                 );
 
         System.out.println(
-                "[INFO] Browser launched successfully"
+                " Browser launched successfully"
         );
 
         test = extent.createTest(
@@ -94,7 +94,7 @@ public class BaseTest {
             driver.quit();
 
             System.out.println(
-                    "=== Browser closed ==="
+                    " Browser closed "
             );
         }
     }
@@ -105,7 +105,7 @@ public class BaseTest {
         extent.flush();
 
         System.out.println(
-                "=== Extent Report generated ==="
+                " Extent Report generated "
         );
     }
 }

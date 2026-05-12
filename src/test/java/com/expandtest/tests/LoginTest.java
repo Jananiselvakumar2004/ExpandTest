@@ -8,7 +8,7 @@ import org.testng.annotations.Test;
 
 public class LoginTest extends BaseTest {
 
-    // ===== TEST DATA =====
+
 
     @DataProvider(name = "loginCredentials")
     public Object[][] loginCredentials() {
@@ -29,7 +29,7 @@ public class LoginTest extends BaseTest {
         };
     }
 
-    // ===== LOGIN TEST =====
+
 
     @Test(dataProvider = "loginCredentials", priority = 1)
 
@@ -38,7 +38,7 @@ public class LoginTest extends BaseTest {
                           boolean shouldPass) {
 
         System.out.println(
-                "[TEST] Login test for: " + username);
+                " Login test for: " + username);
 
         LoginPage loginPage =
                 new LoginPage(driver);
@@ -73,14 +73,14 @@ public class LoginTest extends BaseTest {
         }
     }
 
-    // ===== LOGOUT TEST =====
+
 
     @Test(priority = 2)
 
     public void testLogout() {
 
         System.out.println(
-                "[TEST] Logout functionality test");
+                " Logout functionality test");
 
         LoginPage loginPage =
                 new LoginPage(driver);
@@ -107,10 +107,10 @@ public class LoginTest extends BaseTest {
         );
 
         System.out.println(
-                "[PASS] Logout redirected successfully");
+                " Logout redirected successfully");
     }
 
-    // ===== INVALID LOGIN MESSAGE TEST =====
+
 
     @Test(priority = 3)
 
